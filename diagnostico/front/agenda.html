@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agenda de Contactos</title>
+<style>
+        /* Estilos CSS */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+        }
+        #contactos-lista {
+            margin-top: 20px;
+        }
+        .contacto {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        .contacto:last-child {
+            border-bottom: none;
+        }
+        .botones {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+        .botones button {
+            padding: 5px 10px;
+            border: none;
+            cursor: pointer;
+            border-radius: 3px;
+            background-color: #007bff;
+            color: #fff;
+        }
+        .botones button:hover {
+            background-color: #0056b3;
+        }
+        .formulario {
+            margin-top: 20px;
+        }
+        .formulario input[type="text"],
+        .formulario input[type="email"] {
+            width: calc(100% - 20px);
+            padding: 8px;
+            margin-bottom: 10px;
+            border-radius: 3px;
+            border: 1px solid #ddd;
+        }
+        .formulario input[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 3px;
+            background-color: #007bff;
+            color: #fff;
+            cursor: pointer;
+        }
+        .formulario input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Agenda de Contactos</h1>
+        <div id="contactos-lista"></div>
+        <div class="formulario">
+            <h2>Agregar Contacto</h2>
+            <form id="formulario-contacto">
+                <input type="text" id="nombre" placeholder="Nombre" required>
+                <input type="text" id="apellido" placeholder="Apellido" required>
+                <input type="email" id="email" placeholder="Email" required>
+                <input type="submit" value="Agregar Contacto">
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const apiUrl = 'http://localhost:8089/api/contactos';
+
+        async function mostrarContactos() {
+            const response = await fetch(apiUrl, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+            }});
+            const contactos = await response.json();
+            const contactosLista = document.getElementById('contactos-lista');
+            contactosLista.innerHTML = '';
+            contactos.data.forEach(contacto => {
+                const contactoDiv = document.createElement('div');
+                contactoDiv.classList.add('contacto');
+                contactoDiv.innerHTML = `
+                    <h3>${contacto.nombre} ${contacto.apellido}</h3>
+                    <p>Email: ${contacto.email}</p>
+                    <div class="botones">
+                        <button onclick="eliminarContacto(${contacto.id})">Eliminar</button>
+                    </div>
+                `;
+                contactosLista.appendChild(contactoDiv);
+            });
+        }
+
+        document.getElementById('formulario-contacto').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const nombre = document.getElementById('nombre').value;
+            const apellido = document.getElementById('apellido').value;
+            const email = document.getElementById('email').value;
+
+            const response = await fetch(apiUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ nombre, apellido, email })
+            });
+            console.log('response')
+            console.log(response)
+            if (response.ok) {
+                mostrarContactos(); // Recargar lista de contactos
+            }
+        });
+
+        async function eliminarContacto(id) {
+            const response = await fetch(`${apiUrl}/${id}`, {
+                method: 'DELETE'
+            });
+
+            if (response.ok) {
+                mostrarContactos(); // Recargar lista de contactos
+            }
+        }
+
+        mostrarContactos(); // Cargar contactos al inicializar la página
+    </script>
+</body>
+</html>
