@@ -4,9 +4,12 @@ const pool = require('./db');
 const crearUsuario = async (nombre) => {
     const connection = await pool.getConnection();
     try {
-        await connection.execute('INSERT INTO usuarios (nombre) VALUES (?)', [nombre]);
-        console.log(`Usuario ${nombre} creado.`);
+        const query = 'CALL sp_crear_usuario(?)';
+        await connection.execute(query, [nombre]);
         return { status: true };
+    } catch (error) {
+        console.error('Error calling stored procedure:', error);
+        return { status: false, error };
     } finally {
         connection.release();
     }
