@@ -1,4 +1,36 @@
-CREATE PROCEDURE  sp_crear_usuario ( IN p_nombre VARCHAR(255))
+DELIMITER //
+
+CREATE PROCEDURE sp_crear_usuario (
+    IN p_nombre VARCHAR(255)
+)
 BEGIN
-INSERT INTO usuarios(nombre) VALUES (p_nombre);
-END;
+    INSERT INTO usuarios(nombre) 
+    VALUES (p_nombre);
+END //
+
+DELIMITER ;
+///////////////////////////////////////////////////
+DELIMITER //
+
+CREATE PROCEDURE sp_crear_grupo (
+    IN p_nombre VARCHAR(255)
+)
+BEGIN
+    INSERT INTO grupos(nombre) 
+    VALUES (p_nombre);
+END //
+
+DELIMITER ;
+////////////////////////////////////////
+DELIMITER //
+
+CREATE PROCEDURE sp_crear_acciones (
+    IN p_descripcion VARCHAR(255)
+)
+BEGIN
+    INSERT INTO acciones(descripcion) 
+    VALUES (p_descripcion);
+END //
+
+DELIMITER ;
+
