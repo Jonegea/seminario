@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="login-container">
+        <div class="logo">
+            <img src="je_logo_elegant.png" alt="JE Logo">
+        </div>
+        <form id="login-form" class="login-form" onsubmit="handleLogin(event)">
+            <h2>Iniciar Sesión</h2>
+            <div class="form-group">
+                <label for="username">Usuario</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Contraseña</label>
+                <input type="password" id="password" name="password" required pattern="(?=.\d)(?=.[a-z])(?=.[A-Z])(?=.[!@#$%^&()_+])[A-Za-z\d!@#$%^&()_+]{12,}">
+            </div>
+            <button type="submit">Ingresar</button>
+        </form>
+    </div>
+
+    <script>
+        function handleLogin(event) {
+            event.preventDefault(); // Evita que el formulario se envíe de forma tradicional
+
+            // Obtén los valores de los campos
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            // Muestra los valores en la consola (o haz lo que necesites con ellos)
+            console.log('Usuario:', username);
+            console.log('Contraseña:', password);
+
+            // Aquí puedes añadir la lógica para enviar los datos a un servidor, etc.
+            fetch("http://locahost:3000/login", { // http://locahost:3000/crearUsuario
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    "usuario": username,
+                    "password": password,
+                })
+            }).then(result => {
+                console.log(result);
+            }).catch(error => {
+                console.error(error);
+            });
+        }
+    </script>
+</body>
+
+</html>
